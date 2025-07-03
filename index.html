@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us - Ankii & Me</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(145deg, #ffe6f0, #ffffff);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .envelope {
+      position: relative;
+      width: 200px;
+      height: 120px;
+      background: #ff69b4;
+      cursor: pointer;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+    .envelope:hover {
+      transform: scale(1.05);
+    }
+    .flap {
+      position: absolute;
+      top: -60px;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background: #ff69b4;
+      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+    }
+    .title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #d63384;
+    }
+    .btn {
+      padding: 10px 20px;
+      background: #ff85a2;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 2rem;
+      text-decoration: none;
+    }
+    .btn:hover {
+      background: #ff4f81;
+    }
+    #loginBox {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="title">About Us 💌</h1>
+
+  <div class="envelope" onclick="openEnvelope()">
+    <div class="flap"></div>
+  </div>
+
+  <div id="loginBox">
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button class="btn" onclick="login()">Open Envelope</button>
+  </div>
+
+  <audio id="clickSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_50e3f9c91b.mp3"></audio>
+
+  <script>
+    function openEnvelope() {
+      document.getElementById("clickSound").play();
+    }
+
+    function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      if (username === "funny" && password === "ankii") {
+        window.location.href = "overview.html";
+      } else {
+        alert("Oops! Wrong username or password 💔");
+      }
+    }
+  </script>
+</body>
+</html>
