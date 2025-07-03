@@ -1,0 +1,83 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getDatabase, ref, push, onChildAdded, set, serverTimestamp, onValue } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBFruYoYJEXHUFB0bw4A-WqJ9A3gg8retc",
+  authDomain: "sorry-project-b9cdb.firebaseapp.com",
+  projectId: "sorry-project-b9cdb",
+  databaseURL: "https://sorry-project-b9cdb-default-rtdb.firebaseio.com",
+  storageBucket: "sorry-project-b9cdb.appspot.com",
+  messagingSenderId: "482945510805",
+  appId: "1:482945510805:web:fc8ac372590215a266da9c",
+  measurementId: "G-CVNDT9T56M"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const chatRef = ref(db, "chat");
+const typingRef = ref(db, "typing");
+const onlineRef = ref(db, "status/user_ankii");
+
+const chatBox = document.getElementById("chatBox");
+const input = document.getElementById("chatInput");
+const typingIndicator = document.getElementById("typingIndicator");
+const user = prompt("Enter your name (e.g., You or Ankii)", "You");
+
+// Handle sending chat
+window.sendChat = function () {
+  const msg = input.value.trim();
+  if (!msg) return;
+  push(chatRef, {
+    sender: user,
+    text: msg,
+    time: new Date().toLocaleTimeString()
+  });
+  input.value = "";
+  set(typingRef, { [user]: false });
+};
+
+// Show new chat messages
+onChildAdded(chatRef, (snapshot) => {
+  const data = snapshot.val();
+  const div = document.createElement("div");
+  div.className = `msg ${data.sender === user ? "you" : "her"}`;
+  div.textContent = `${data.sender}: ${data.text}`;
+  chatBox.appendChild(div);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  // Play sound if someone else sends
+  if (data.sender !== user) {
+    const audio = new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_50e3f9c91b.mp3");
+    audio.play();
+    if (Notification.permission === "granted") {
+      new Notification("New message from " + data.sender, { body: data.text });
+    }
+  }
+});
+
+// Typing indicator
+input.addEventListener("input", () => {
+  set(typingRef, { [user]: true });
+  setTimeout(() => set(typingRef, { [user]: false }), 1500);
+});
+
+onValue(typingRef, (snapshot) => {
+  const who = Object.entries(snapshot.val() || {}).find(([k, v]) => v && k !== user);
+  typingIndicator.textContent = who ? `${who[0]} is typing...` : "";
+});
+
+// Online status of Ankii
+onValue(onlineRef, (snapshot) => {
+  const statusBox = document.getElementById("onlineStatus");
+  const status = snapshot.val();
+  if (status && status.online) {
+    statusBox.textContent = "Ankii is online 🟢";
+  } else {
+    statusBox.textContent = "Ankii is offline 🔴";
+  }
+});
+
+// Request notification permission
+if (Notification.permission !== "granted") {
+  Notification.requestPermission();
+}
