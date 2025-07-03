@@ -1,0 +1,112 @@
+<!-- Firebase Integration Script -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getDatabase, ref, push, onChildAdded, set, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBFruYoYJEXHUFB0bw4A-WqJ9A3gg8retc",
+    authDomain: "sorry-project-b9cdb.firebaseapp.com",
+    databaseURL: "https://sorry-project-b9cdb-default-rtdb.firebaseio.com",
+    projectId: "sorry-project-b9cdb",
+    storageBucket: "sorry-project-b9cdb.appspot.com",
+    messagingSenderId: "482945510805",
+    appId: "1:482945510805:web:fc8ac372590215a266da9c",
+    measurementId: "G-CVNDT9T56M"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // Firebase Chat
+  const chatInput = document.getElementById('chatInput');
+  const chatBox = document.getElementById('chatBox');
+
+  if (chatInput && chatBox) {
+    window.sendFirebaseMessage = function () {
+      const msg = chatInput.value.trim();
+      if (!msg) return;
+      push(ref(db, 'chat'), {
+        msg,
+        time: new Date().toLocaleTimeString()
+      });
+      chatInput.value = '';
+    };
+
+    onChildAdded(ref(db, 'chat'), data => {
+      const { msg, time } = data.val();
+      const msgEl = document.createElement('div');
+      msgEl.className = 'p-2 my-1 bg-pink-100 rounded-xl shadow-sm text-left';
+      msgEl.innerHTML = `<span class='text-pink-800'>${msg}</span>
+                         <span class='block text-xs text-gray-400 text-right'>${time}</span>`;
+      chatBox.appendChild(msgEl);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+  }
+
+  // Likes and Dislikes
+  function saveToFirebase(id, field) {
+    const input = document.getElementById(id).value.trim();
+    const items = input.split(',').map(x => x.trim());
+    set(ref(db, field), items);
+  }
+
+  function renderList(id, items) {
+    const list = document.getElementById(id);
+    list.innerHTML = '';
+    items.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      list.appendChild(li);
+    });
+  }
+
+  onValue(ref(db, 'likes'), snapshot => {
+    const items = snapshot.val() || [];
+    renderList('likesList', items);
+    document.getElementById('likesInput').value = items.join(', ');
+  });
+
+  onValue(ref(db, 'dislikes'), snapshot => {
+    const items = snapshot.val() || [];
+    renderList('dislikesList', items);
+    document.getElementById('dislikesInput').value = items.join(', ');
+  });
+
+  window.saveLikes = () => saveToFirebase('likesInput', 'likes');
+  window.saveDislikes = () => saveToFirebase('dislikesInput', 'dislikes');
+
+  // Comments
+  function saveCommentToFirebase() {
+    const comment = document.getElementById('commentInput').value.trim();
+    if (!comment) return;
+    push(ref(db, 'comments'), {
+      text: comment,
+      time: new Date().toLocaleString()
+    });
+    document.getElementById('commentInput').value = '';
+  }
+
+  function renderComments(comments) {
+    const display = document.getElementById('commentsDisplay');
+    display.innerHTML = '';
+    comments.forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'p-3 bg-pink-50 rounded-xl shadow-sm';
+      div.innerHTML = `<p class="text-pink-800">${c.text}</p>
+                       <p class="text-xs text-gray-400 text-right mt-1">${c.time}</p>`;
+      display.appendChild(div);
+    });
+  }
+
+  onChildAdded(ref(db, 'comments'), data => {
+    const comment = data.val();
+    const display = document.getElementById('commentsDisplay');
+    const div = document.createElement('div');
+    div.className = 'p-3 bg-pink-50 rounded-xl shadow-sm';
+    div.innerHTML = `<p class="text-pink-800">${comment.text}</p>
+                     <p class="text-xs text-gray-400 text-right mt-1">${comment.time}</p>`;
+    display.appendChild(div);
+  });
+
+  window.saveComment = saveCommentToFirebase;
+</script>

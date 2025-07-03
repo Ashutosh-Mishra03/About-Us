@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview - Just For Ankii 💖</title>
+  <script type="module" src="firebase-integration.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background: linear-gradient(to bottom right, #ffe4ec, #ffffff);
+      color: #c2185b;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .section {
+      background: #fff0f5;
+      padding: 20px;
+      margin: 20px auto;
+      border-radius: 16px;
+      max-width: 600px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    input, textarea {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      background: #f06292;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 5px;
+    }
+    ul { list-style-type: heart; padding: 0; }
+    li { margin: 5px; }
+    #bdayCounter {
+      font-size: 1rem;
+      color: #8e24aa;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌸 Welcome Ankii 🌸</h1>
+  <div id="bdayCounter"></div>
+
+  <div class="section">
+    <h2>Things We Like 💗</h2>
+    <input type="text" id="likesInput" placeholder="What do we both like?" />
+    <button onclick="saveLikes()">Save Common Likes</button>
+    <ul id="likesList"></ul>
+
+    <input type="text" id="ankiiLikesInput" placeholder="What Ankii likes?" />
+    <button onclick="saveAnkiiLikes()">Save Ankii's Likes</button>
+    <ul id="ankiiLikesList"></ul>
+
+    <input type="text" id="ashuLikesInput" placeholder="What Ashu likes?" />
+    <button onclick="saveAshuLikes()">Save Ashu's Likes</button>
+    <ul id="ashuLikesList"></ul>
+
+    <input type="text" id="dislikesInput" placeholder="What do we both dislike?" />
+    <button onclick="saveDislikes()">Save Dislikes</button>
+    <ul id="dislikesList"></ul>
+
+    <button onclick="downloadList()">📥 Download Memories</button>
+  </div>
+
+  <div class="section">
+    <h2>Leave Your Review 📝</h2>
+    <textarea id="commentInput" placeholder="Write your thoughts..."></textarea>
+    <button onclick="saveComment()">Submit Comment</button>
+    <div id="commentsDisplay"></div>
+  </div>
+
+  <div class="section">
+    <h2>Want to Chat? 💖</h2>
+    <a href="chat.html"><button>Go to Chat Room</button></a>
+  </div>
+
+  <div class="section">
+    <h2>Let’s Video Call 📹</h2>
+    <a href="https://wa.me/9369055303" target="_blank"><button>Call Me (Ashu)</button></a>
+    <a href="https://wa.me/9508812525" target="_blank"><button>Call Ankii</button></a>
+  </div>
+</body>
+</html>
